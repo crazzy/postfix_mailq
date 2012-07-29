@@ -1,0 +1,12 @@
+postfix_mailq - Simple nagios plugin for checking Postfix mail queue
+
+Author: Johan Hedberg, City Network Hosting AB <jh@citynetwork.se>
+
+It checks the different queues separately and doesn't care much for hold
+like the standard check_mailq plugin would do. It also requires that a
+single queue gets over the limit and not all of them together.
+
+Accepted command line options are solely -c and -w for setting the warning
+and critical queue levels. Upon reaching warning or critical state on one
+queue, the queue in question becomes uppercase in output so the sysadmin
+quickly can see which queue he or she has to look at.
