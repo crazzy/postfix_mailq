@@ -23,15 +23,19 @@ my @queues = qw(active incoming deferred hold);
 my %args;
 my $usage = "Wrong argument list, needs both -c and -w!";
 getopt('cw', \%args);
-croak "$usage" unless defined($args{c});
-croak "$usage" unless defined($args{w});
+unless (defined($args{c})) {
+	print_usage();
+}
+unless (defined($args{w})) {
+	print_usage();
+}
 
 # Check that we got integers
 if ($args{c} !~ /^\d+\z/) {
-	croak "Not an integer: $args{c}!";
+	print_usage();
 }
 if ($args{w} !~ /^\d+\z/) {
-	croak "Not an integer: $args{w}!";
+	print_usage();
 }
 
 # For each queue
@@ -87,9 +91,22 @@ print $output . "\n";
 # Setting return code
 exit $ERRORS{$status};
 
+
+#
+## Subroutines
+#
+
+
 # Calculate number of mails in a given queue
 sub get_queue_mails {
 	my ($postfix_queues_path, $queue_name) = @_;
 	my @files = File::Find::Rule->file()->in("$postfix_queues_path/$queue_name");
 	return scalar @files;
+}
+
+# Usage
+sub print_usage {
+	print "Usage: postfix_mailq.pl -c <crit> -w <warn>\n";
+	print "-c and -w expects an integer each\n";
+	exit $ERRORS{UNKNOWN};
 }
