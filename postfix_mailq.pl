@@ -12,6 +12,8 @@ use Getopt::Std;
 use Carp;
 use Data::Dumper;
 use File::Find::Rule;
+use lib "/usr/local/libexec/nagios";
+use utils qw(%ERRORS);
 
 # Config
 my $postfix_path = '/var/spool/postfix';
@@ -83,10 +85,7 @@ foreach (@keys) {
 print $output . "\n";
 
 # Setting return code
-if ($status eq "OK") { exit 0; }
-elsif ($status eq "WARNING") { exit 1; }
-elsif ($status eq "CRITICAL") { exit 2; }
-else { exit 3; }
+exit $ERRORS{$status};
 
 # Calculate number of mails in a given queue
 sub get_queue_mails {
