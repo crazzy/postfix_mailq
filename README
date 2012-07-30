@@ -10,3 +10,9 @@ Accepted command line options are solely -c and -w for setting the warning
 and critical queue levels. Upon reaching warning or critical state on one
 queue, the queue in question becomes uppercase in output so the sysadmin
 quickly can see which queue he or she has to look at.
+
+The plugin also supports the nagios perfdata protocol for graphing.
+
+Plugin has only been tested with op5, but should work just fine in
+both nagios, icinga and other nagios-based products. In the testing
+environment it ran via the nagios NRPE daemon and the op5 check_nrpe.
