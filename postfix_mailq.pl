@@ -24,6 +24,14 @@ getopt('cw', \%args);
 croak "$usage" unless defined($args{c});
 croak "$usage" unless defined($args{w});
 
+# Check that we got integers
+if ($args{c} !~ /^\d+\z/) {
+	croak "Not an integer: $args{c}!";
+}
+if ($args{w} !~ /^\d+\z/) {
+	croak "Not an integer: $args{w}!";
+}
+
 # For each queue
 my $status = "OK";
 my %values;
