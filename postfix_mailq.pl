@@ -17,6 +17,7 @@ use utils qw(%ERRORS);
 
 # Config
 my $postfix_path = '/var/spool/postfix';
+my $enable_perfdata = 1;
 my @queues = qw(active incoming deferred hold);
 
 # Parse argv
@@ -80,9 +81,11 @@ foreach (@keys) {
 chop($output);
 
 # Add perfdata to output
-$output .= " |";
-foreach (@keys) {
-	$output .= " $_=" . $values{$_} . "[c];[$args{w}];[$args{c}]";
+if($enable_perfdata == 1) {
+	$output .= " |";
+	foreach (@keys) {
+		$output .= " $_=" . $values{$_} . "[c];[$args{w}];[$args{c}]";
+	}
 }
 
 # Output
