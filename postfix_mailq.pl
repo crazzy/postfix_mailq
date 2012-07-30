@@ -26,7 +26,7 @@ croak "$usage" unless defined($args{w});
 
 # For each queue
 my $status = "OK";
-my $retval = "";
+my %values;
 foreach my $queue (@queues) {
 	my $queue_output_name = $queue;
 	my $queue_mails = get_queue_mails($postfix_path, $queue);
@@ -49,10 +49,36 @@ foreach my $queue (@queues) {
 	}
 
 	# Add to output
-	$retval .= " $queue_output_name=$queue_mails,";
+	$values{$queue_output_name} = $queue_mails;
 }
-chop $retval;
-print $status . ":" . $retval . "\n";
+print $status;
+
+# Generate output string
+my $output = ":";
+my @keys = sort {
+	if(lc($a) eq 'hold') { return 1; }
+	elsif (lc($b) eq 'hold') { return -1; }
+	else { lc($a) cmp lc($b); }
+} keys %values;
+foreach (@keys) {
+	$output .= " $_=$values{$_},";
+}
+chop($output);
+
+# Add perfdata to output
+$output .= " |";
+foreach (@keys) {
+	$output .= " $_=" . $values{$_} . "[c];[$args{w}];[$args{c}]";
+}
+
+# Output
+print $output . "\n";
+
+# Setting return code
+if ($status eq "OK") { exit 0; }
+elsif ($status eq "WARNING") { exit 1; }
+elsif ($status eq "CRITICAL") { exit 2; }
+else { exit 3; }
 
 # Calculate number of mails in a given queue
 sub get_queue_mails {
